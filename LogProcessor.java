@@ -65,19 +65,18 @@ public class LogProcessor {
         Queue<LogEntry> logQueue = new Queue<>();
         Stack<LogEntry> errorStack = new Stack<>();
 
-        // Read log file and enqueue entries
         try (BufferedReader br = new BufferedReader(new FileReader(LOG_FILE))) {
             String line;
-            br.readLine(); // Skip header
+            br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("] ");
                 if (parts.length < 2) {
-                    continue; // Skip lines that don't match the expected format
+                    continue;
                 }
-                String timestamp = parts[0].substring(1); // Remove leading '['
+                String timestamp = parts[0].substring(1);
                 String[] levelAndMessage = parts[1].split(" ", 2);
                 if (levelAndMessage.length < 2) {
-                    continue; // Skip invalid log lines
+                    continue;
                 }
                 String logLevel = levelAndMessage[0];
                 String message = levelAndMessage[1];
@@ -88,7 +87,6 @@ public class LogProcessor {
             return;
         }
 
-        // Process queue and perform analysis
         int infoCount = 0;
         int warnCount = 0;
         int errorCount = 0;
@@ -113,14 +111,12 @@ public class LogProcessor {
             }
         }
 
-        // Print analysis results
         System.out.println("Log Level Counts:");
         System.out.println("INFO: " + infoCount);
         System.out.println("WARN: " + warnCount);
         System.out.println("ERROR: " + errorCount);
         System.out.println("\nMemory Warnings: " + memoryWarnings);
 
-        // Print last 100 errors
         System.out.println("\nLast 100 Errors:");
         LinkedList<LogEntry> recentErrors = errorStack.getLastN(100);
         for (LogEntry error : recentErrors) {
